@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZZZ ATK vs CD Calculator</title>
+<style>
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f0f2f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+}
+
+.calculator-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  max-width: 400px;
+  width: 90%;
+}
+
+h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.input-group {
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+label {
+  font-weight: 500;
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #555;
+}
+
+.info-icon {
+  display: inline-block;
+  margin-left: 5px;
+  color: #007bff;
+  cursor: pointer;
+  position: relative;
+  font-weight: bold;
+}
+
+.info-icon:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tooltip {
+  position: absolute;
+  left: 20px;
+  top: -2px;
+  background: #333;
+  color: #fff;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 6px rgba(0,123,255,0.3);
+}
+
+button {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 0.5rem;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+#result {
+  margin-top: 1rem;
+  font-weight: bold;
+  text-align: center;
+  background-color: #e9f7ef;
+  border-left: 4px solid #28a745;
+  border-radius: 6px;
+  padding: 0.5rem;
+  color: #1f3d21;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 480px) {
+  .calculator-card {
+    padding: 1rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="calculator-card">
+  <h2>ATK vs CD Breakpoint Calculator</h2>
+
+  <div class="input-group">
+    <label>Crit Damage (%)
+      <span class="info-icon">ℹ️
+        <span class="tooltip">The total crit damage multiplier including everything from the character and external buffs like KotS.</span>
+      </span>
+    </label>
+    <input id="cd" type="number" value="250">
+  </div>
+
+  <div class="input-group">
+    <label>Flat ATK Buff
+      <span class="info-icon">ℹ️
+        <span class="tooltip">The flat attack added in combat. 600 for Lucy, 1000 for Soukaku, 1200 for Astra and Yuzuha.</span>
+      </span>
+    </label>
+    <input id="flat" type="number" value="1200">
+  </div>
+
+  <div class="input-group">
+    <label>Combat ATK (%)
+      <span class="info-icon">ℹ️
+        <span class="tooltip">The sum of combat ATK% bonus. Mainly 4pc sets and support weapons.</span>
+      </span>
+    </label>
+    <input id="atkPct" type="number" value="18">
+  </div>
+
+  <div class="input-group">
+    <label>Base Character ATK
+      <span class="info-icon">ℹ️
+        <span class="tooltip">Your character's base ATK. Leave as is if unsure. You can find it on hakushin.</span>
+      </span>
+    </label>
+    <input id="baseChar" type="number" value="929">
+  </div>
+
+  <div class="input-group">
+    <label>Base Weapon ATK
+      <span class="info-icon">ℹ️
+        <span class="tooltip">Your weapon's base ATK. Leave as is if unsure. You can find it on hakushin.</span>
+      </span>
+    </label>
+    <input id="baseWeap" type="number" value="713">
+  </div>
+
+  <button onclick="calc()">Calculate Breakpoint ATK</button>
+
+  <p id="result"></p>
+</div>
+
+<script>
+function calc() {
+  const cd = Number(document.getElementById("cd").value) / 100;
+  const flat = Number(document.getElementById("flat").value);
+  const p = Number(document.getElementById("atkPct").value) / 100;
+  const baseChar = Number(document.getElementById("baseChar").value);
+  const baseWeap = Number(document.getElementById("baseWeap").value);
+  const deltaATK = 0.03 * (baseChar + baseWeap);
+  const deltaCD = 0.048;
+  const atk = (deltaATK * (1 + cd) / deltaCD) - (flat / (1 + p));
+
+  document.getElementById("result").innerText =
+    "Breakpoint ATK ≈ " + Math.round(atk);
+}
+</script>
+
+</body>
+</html>
